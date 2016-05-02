@@ -14,7 +14,6 @@ public class Conversation {
 	}
 
 	public Conversation(String id, String participantOne, String participantTwo, long createdAt, long updatedAt) {
-
 		this.id = id;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;

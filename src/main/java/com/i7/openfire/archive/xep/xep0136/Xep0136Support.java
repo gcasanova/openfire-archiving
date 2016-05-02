@@ -1,9 +1,8 @@
 package com.i7.openfire.archive.xep.xep0136;
 
-import java.util.ArrayList;
-
 import org.jivesoftware.openfire.XMPPServer;
 
+import com.google.common.collect.Lists;
 import com.i7.openfire.archive.xep.AbstractXepSupport;
 
 /**
@@ -18,7 +17,7 @@ public class Xep0136Support extends AbstractXepSupport {
 	public Xep0136Support(XMPPServer server) {
 		super(server, NAMESPACE_AUTO, IQ_NAMESPACE, "XEP-0136 IQ Dispatcher");
 
-		iqHandlers = new ArrayList<>();
+		iqHandlers = Lists.newArrayList();
 		iqHandlers.add(new IQListHandler());
 	}
 }

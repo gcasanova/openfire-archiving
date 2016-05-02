@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,9 +36,11 @@ import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 import org.xmpp.packet.Message;
 
+import com.google.common.collect.Lists;
 import com.i7.openfire.archive.cluster.GetConversationCountTask;
 import com.i7.openfire.archive.cluster.GetConversationTask;
 import com.i7.openfire.archive.cluster.GetConversationsTask;
+import com.i7.openfire.archive.config.DataConfig;
 import com.i7.openfire.archive.config.Properties;
 import com.i7.openfire.archive.database.Queries;
 import com.i7.openfire.archive.enums.MessageStatus;
@@ -47,11 +49,14 @@ import com.i7.openfire.archive.model.Conversation;
 import com.i7.openfire.archive.plugin.ArchivingPlugin;
 import com.i7.openfire.archive.tasks.ArchivingTask;
 
+import redis.clients.jedis.JedisCluster;
+
 public class ConversationManager implements ComponentEventListener, Startable {
 	private static final Logger log = LoggerFactory.getLogger(ConversationManager.class);
 
-	public static final String CONVERSATIONS_KEY = "conversations";
+	private static final String USER_CHATS_PREFIX = "user#chats#";
 
+	private JedisCluster jedis;
 	private Properties properties;
 
 	private TimerTask maxAgeTask;
@@ -79,6 +84,7 @@ public class ConversationManager implements ComponentEventListener, Startable {
 
 	@Override
 	public void start() {
+		jedis = DataConfig.getInstance().getJedis();
 		messageQueue = new ConcurrentLinkedQueue<>();
 		conversationQueue = new ConcurrentLinkedQueue<>();
 		messageUpdatedQueue = new ConcurrentLinkedQueue<>();
@@ -181,6 +187,7 @@ public class ConversationManager implements ComponentEventListener, Startable {
 		conversationListeners.clear();
 		conversationListeners = null;
 
+		jedis = null;
 		serverInfo = null;
 		InternalComponentManager.getInstance().removeListener(this);
 	}
@@ -241,7 +248,7 @@ public class ConversationManager implements ComponentEventListener, Startable {
 	@SuppressWarnings("unchecked")
 	public Collection<Conversation> getConversations() {
 		if (ClusterManager.isSeniorClusterMember()) {
-			List<Conversation> conversationList = new ArrayList<Conversation>(conversations.values());
+			List<Conversation> conversationList = Lists.newArrayList(conversations.values());
 			// Sort the conversations by creation date.
 			Collections.sort(conversationList, new Comparator<Conversation>() {
 				@Override
@@ -313,6 +320,9 @@ public class ConversationManager implements ComponentEventListener, Startable {
 	 * Processes an incoming message of a one-to-one chat. The message will
 	 * be mapped to a conversation and then queued for storage if archiving is
 	 * turned on.
+	 * 
+	 * In case of a new conversation is created and if hot chatter block functionality 
+	 * is enabled, this event will be recorded. 
 	 */
 	void processMessage(String messageId, JID sender, JID receiver, String body, long createdAt) {
 		String conversationKey = getConversationKey(sender, receiver);
@@ -332,6 +342,11 @@ public class ConversationManager implements ComponentEventListener, Startable {
 				if (!conversations.isEmpty() && conversations.iterator().hasNext()) {
 					conversation = conversations.iterator().next();
 				} else {
+					// record new entry hot chatter entry for receiver user
+					if (properties.isHotChatterEnabled()) {
+						jedis.zadd(USER_CHATS_PREFIX + receiver.toBareJID(), Instant.now().toEpochMilli(), sender.toBareJID());
+					}
+					
 					// Make sure that the user joined the conversation before a
 					// message was received
 					conversation = new Conversation(conversationKey, sender.toBareJID(), receiver.toBareJID(),

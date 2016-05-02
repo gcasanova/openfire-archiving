@@ -1,6 +1,5 @@
 package com.i7.openfire.archive.xep.xep0136;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.xmpp.packet.IQ;
 import org.xmpp.packet.JID;
 
+import com.google.common.collect.Lists;
 import com.i7.openfire.archive.model.ArchivedMessage;
 import com.i7.openfire.archive.xep.AbstractIQHandler;
 import com.i7.openfire.archive.xep.xep0059.XmppResultSet;
@@ -78,7 +78,7 @@ public class IQListHandler extends AbstractIQHandler implements ServerFeaturesPr
 
 	@Override
 	public Iterator<String> getFeatures() {
-		ArrayList<String> features = new ArrayList<String>();
+		List<String> features = Lists.newArrayList();
 		features.add(NAMESPACE_MANAGE);
 		return features.iterator();
 	}

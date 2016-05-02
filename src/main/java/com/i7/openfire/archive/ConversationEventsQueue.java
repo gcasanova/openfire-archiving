@@ -1,6 +1,5 @@
 package com.i7.openfire.archive;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +10,7 @@ import org.jivesoftware.util.JiveConstants;
 import org.jivesoftware.util.TaskEngine;
 import org.jivesoftware.util.cache.CacheFactory;
 
+import com.google.common.collect.Lists;
 import com.i7.openfire.archive.cluster.SendConversationEventsTask;
 
 /**
@@ -34,7 +34,7 @@ public class ConversationEventsQueue {
 			@Override
 			public void run() {
 				// Move queued events to a temporary place
-				List<ConversationEvent> eventsToSend = new ArrayList<ConversationEvent>();
+				List<ConversationEvent> eventsToSend = Lists.newArrayList();
 				synchronized (chatEvents) {
 					for (List<ConversationEvent> list : chatEvents.values()) {
 						// Send all events
@@ -65,7 +65,7 @@ public class ConversationEventsQueue {
 		synchronized (chatEvents) {
 			List<ConversationEvent> events = chatEvents.get(conversationKey);
 			if (events == null) {
-				events = new ArrayList<ConversationEvent>();
+				events = Lists.newArrayList();
 				chatEvents.put(conversationKey, events);
 			}
 			events.add(event);

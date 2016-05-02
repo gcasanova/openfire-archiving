@@ -3,7 +3,6 @@ package com.i7.openfire.archive.cluster;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.jivesoftware.openfire.XMPPServer;
@@ -12,6 +11,7 @@ import org.jivesoftware.util.cache.ExternalizableUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.i7.openfire.archive.ConversationEvent;
 import com.i7.openfire.archive.ConversationManager;
 import com.i7.openfire.archive.plugin.ArchivingPlugin;
@@ -61,7 +61,7 @@ public class SendConversationEventsTask implements ClusterTask<Void> {
 
 	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-		events = new ArrayList<ConversationEvent>();
+		events = Lists.newArrayList();
 		ExternalizableUtil.getInstance().readExternalizableCollection(in, events, getClass().getClassLoader());
 	}
 }

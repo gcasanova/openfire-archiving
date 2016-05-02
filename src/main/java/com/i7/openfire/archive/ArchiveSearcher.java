@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.AbstractCollection;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +15,7 @@ import org.jivesoftware.database.DbConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.i7.openfire.archive.database.Queries;
 import com.i7.openfire.archive.model.Conversation;
 
@@ -70,7 +70,7 @@ public class ArchiveSearcher implements Startable {
 			cachedPstmt.addString(jid1);
 		}
 
-		List<String> conversationIDs = new ArrayList<>();
+		List<String> conversationIDs = Lists.newArrayList();
 
 		// Get all matching conversations from the database.
 		Connection con = null;

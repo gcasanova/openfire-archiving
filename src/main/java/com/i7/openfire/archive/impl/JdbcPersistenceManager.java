@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xmpp.packet.JID;
 
+import com.google.common.collect.Lists;
 import com.i7.openfire.archive.ConversationManager;
 import com.i7.openfire.archive.PersistenceManager;
 import com.i7.openfire.archive.config.Properties;
@@ -40,7 +40,7 @@ public class JdbcPersistenceManager implements PersistenceManager {
 		cachedPstmt.addLong(end.getTime());
 		cachedPstmt.addInt(CONVERSATIONS_PAGE_LIMIT);
 
-		List<ArchivedMessage> messages = new ArrayList<>();
+		List<ArchivedMessage> messages = Lists.newArrayList();
 
 		// Get all matching messages from the database.
 		Connection con = null;
@@ -109,7 +109,7 @@ public class JdbcPersistenceManager implements PersistenceManager {
 	@Override
 	public List<ArchivedMessage> getMessages(String conversationId, Date startDate, Date endDate, XmppResultSet xmppResultSet) {
 		int limit = 0, offset = 0;
-		List<ArchivedMessage> messages = new ArrayList<>();
+		List<ArchivedMessage> messages = Lists.newArrayList();
 		
 		if (conversationId != null) {
 			if (xmppResultSet != null) {

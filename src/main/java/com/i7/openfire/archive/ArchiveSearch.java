@@ -1,12 +1,13 @@
 package com.i7.openfire.archive;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.xmpp.packet.JID;
+
+import com.google.common.collect.Lists;
 
 /**
  * Defines a search query for use with an {@link ArchiveSearcher}
@@ -20,7 +21,7 @@ public class ArchiveSearch {
 	 */
 	public static final int NULL_INT = Integer.MAX_VALUE - 123;
 
-	private List<JID> participants = new ArrayList<>();
+	private List<JID> participants = Lists.newArrayList();
 
 	/**
 	 * Start of conversation has to be bigger or equal to this value (if set)
