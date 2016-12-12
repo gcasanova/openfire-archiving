@@ -14,9 +14,9 @@ public class Queries {
 	public static final String CONVERSATION_COUNT = "SELECT COUNT(*) FROM ofConversation";
 	public static final String MESSAGE_COUNT = "SELECT COUNT(*) FROM ofMessage";
 
-	public static final String DELETE_CONVERSATION_1 = "DELETE FROM ofMessage WHERE conversationID=?";
+	public static final String DELETE_CONVERSATION = "DELETE FROM ofMessage WHERE conversationID=?";
 	public static final String DELETE_CONVERSATION_2 = "DELETE FROM ofConversation WHERE id=?";
-
+	
 	public static final String SEARCH_CONVERSATIONS = "SELECT id FROM ofConversation WHERE participantOneJID=? OR participantTwoJID=? ORDER BY updatedAt LIMIT ?, ?";
 	public static final String SEARCH_CONVERSATION = "SELECT id FROM ofConversation WHERE (participantOneJID=? AND participantTwoJID=?) OR (participantOneJID=? AND participantTwoJID=?)";
 

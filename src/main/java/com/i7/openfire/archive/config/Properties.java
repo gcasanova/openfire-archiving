@@ -44,8 +44,8 @@ public class Properties implements PropertyEventListener {
     	idleTime = JiveGlobals.getLongProperty(Conf.IDLE_TIME.toString(), DEFAULT_IDLE_TIME);
     	maxRetrievable = JiveGlobals.getLongProperty(Conf.MAX_RETRIEVABLE.toString(), DEFAULT_MAX_RETRIEVABLE);
     	
-    	redisTimeOut = Integer.valueOf(JiveGlobals.getProperty(Conf.REDIS_TIMEOUT.toString()));
-    	redisMaxRedirects = Integer.valueOf(JiveGlobals.getProperty(Conf.REDIS_MAX_REDIRECTS.toString()));
+    	redisTimeOut = JiveGlobals.getIntProperty(Conf.REDIS_TIMEOUT.toString(), 0);
+    	redisMaxRedirects = JiveGlobals.getIntProperty(Conf.REDIS_MAX_REDIRECTS.toString(), 0);
     	redisNodes = Sets.newHashSet(Arrays.asList(JiveGlobals.getProperty(Conf.REDIS_NODES.toString()).split(",")));
     	
     	maxMessages = JiveGlobals.getIntProperty(Conf.MAX_MESSAGES.toString(), DEFAULT_MAX_MESSAGES);

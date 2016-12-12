@@ -88,9 +88,9 @@ public class ConversationManager implements ComponentEventListener, Startable {
 		messageQueue = new ConcurrentLinkedQueue<>();
 		conversationQueue = new ConcurrentLinkedQueue<>();
 		messageUpdatedQueue = new ConcurrentLinkedQueue<>();
-		conversationUpdatedQueue = new ConcurrentLinkedQueue<>();
 		conversationListeners = new CopyOnWriteArraySet<>();
-
+		conversationUpdatedQueue = new ConcurrentLinkedQueue<>();
+		
 		// Schedule a task to do conversation archiving.
 		archiveTask = new TimerTask() {
 			@Override
@@ -126,7 +126,7 @@ public class ConversationManager implements ComponentEventListener, Startable {
 					PreparedStatement pstmt2 = null;
 					try {
 						con = DbConnectionManager.getConnection();
-						pstmt1 = con.prepareStatement(Queries.DELETE_CONVERSATION_1);
+						pstmt1 = con.prepareStatement(Queries.DELETE_CONVERSATION);
 						pstmt2 = con.prepareStatement(Queries.DELETE_CONVERSATION_2);
 						Date now = new Date();
 						Date maxAgeDate = new Date(now.getTime() - properties.getMaxAge());
